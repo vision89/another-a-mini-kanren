@@ -18,7 +18,6 @@
 (provide lefto)
 (provide nexto)
 (provide ntho)
-(provide /=)
 
 ; Failed goal
 (define fail
@@ -305,13 +304,4 @@
                  (else
                   (all (cdro l h)
                        (ntho (- n 1) x h)))))))
-
-; Not eaual
-; ((/= 'a 'a) '()) => '()
-; ((/= 'b 'a) '()) => '(())
-; ((/= 'fail 'success) '()) => (())
-; ((/= 'b 'b) '()) => '()
-(define /=
-  (lambda (x y)
-    (neg (== x y))))
     
