@@ -18,9 +18,8 @@
 (provide lefto)
 (provide nexto)
 (provide ntheqo)
-;(provide /=)
 (provide ntho)
-;(provide lto)
+(provide pairo)
 
 ; Failed goal
 (define fail
@@ -310,26 +309,7 @@
                  (else
                   (all
                   (cdro l h)
-                  (ntheqo (- n 1) x h)))))))
-
-; Negates a goal
-; (fresh (h) (run* (h) (== (/= 'a 'b) h))) => '((()))
-; (fresh (h) (run* (h) (== (/= 'a 'a) h))) => '(())
-(define negato
- (lambda (x)
-   (cond ((failed? x) '(()))
-         (else '()))))
-                      
-
-; Not equal
-; (fresh (h) (run* (h) (/= 'a 'a h))) => '(())
-; (fresh (h) (run* (h) (/= 'b 'a h))) => '((()))
-; (fresh (h) (run* (h) (/= 'a 'b h))) => '((()))
-; (fresh (h) (run* (h) (/= 'b 'b h))) => '(())
-;(define /=
-;  (lambda (x y h)
-;    (cond ((eq? x y) (== h empty-s))
-;          (else (== h (succeed empty-s))))))
+                  (ntheqo (- n 1) x h)))))))            
 
 ; Select the nth element
 ; (fresh (h) (run* (h) (ntho 1 '(a b c d) h)))
@@ -344,12 +324,8 @@
                   (cdro l h)
                   (ntho (- n 1) h a)))))))
 
-; Returns success if x < y
-; (fresh (h) (run* (h) (lto 1 2 h))) => '((()))
-; (fresh (h) (run* (h) (lto 2 1 h))) => '(())
-;(define lto
-;  (lambda (x y h)
-;    (cond ((not (number? x) empty-s))
-;          ((not (number? y) empty-s))
-;          ((< x y) (== (succeed empty-s) h))
-;          (else (== h empty-s)))))
+; Unify as a pair
+(define pairo
+  (lambda (p)
+    (fresh (a d)
+           (conso a d p))))
