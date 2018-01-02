@@ -19,6 +19,8 @@
 (provide nexto)
 (provide ntheqo)
 (provide /=)
+(provide ntho)
+(provide lto)
 
 ; Failed goal
 (define fail
@@ -320,14 +322,14 @@
                       
 
 ; Not equal
-; ((/= 'a 'a) '()) => '()
-; ((/= 'b 'a) '()) => '(())
-; ((/= 'fail 'success) '()) => (())
-; ((/= 'b 'b) '()) => '()
+; (fresh (h) (run* (h) (/= 'a 'a h))) => '(())
+; (fresh (h) (run* (h) (/= 'b 'a h))) => '((()))
+; (fresh (h) (run* (h) (/= 'a 'b h))) => '((()))
+; (fresh (h) (run* (h) (/= 'b 'b h))) => '(())
 (define /=
-  (lambda (x y)
-    (cond ((eq? x y) empty-s)
-          (else (succeed empty-s)))))
+  (lambda (x y h)
+    (cond ((eq? x y) (== h empty-s))
+          (else (== h (succeed empty-s))))))
 
 ; Select the nth element
 ; (fresh (h) (run* (h) (ntho 1 '(a b c d) h)))
@@ -341,3 +343,11 @@
                   (all 
                   (cdro l h)
                   (ntho (- n 1) h a)))))))
+
+; Returns success if x < y
+; (fresh (h) (run* (h) (lto 1 2 h))) => '((()))
+; (fresh (h) (run* (h) (lto 2 1 h))) => '(())
+(define lto
+  (lambda (x y h)
+    (cond ((< x y) (== (succeed empty-s) h))
+          (else (== h empty-s)))))
