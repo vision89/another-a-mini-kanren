@@ -17,7 +17,7 @@
 (provide memo)
 (provide lefto)
 (provide nexto)
-(provide ntho)
+(provide ntheqo)
 (provide /=)
 
 ; Failed goal
@@ -296,22 +296,48 @@
          (lefto y x l))))
 
 ; Succeeds if x matches the nth element in l
-(define ntho
+; (fresh (h) (run* (h) (ntheqo 1  'b '(a b c d)))) => '(())
+; (fresh (h) (run* (h) (ntheqo 1  'b '(a b c d)))) => '()
+(define ntheqo
   (lambda (n x l)
     (fresh (h)
            (cond ((= n 0)
-                  (all (caro l h)
-                       (== h x)))
+                  (all 
+                  (caro l h)
+                  (== h x)))
                  (else
-                  (all (cdro l h)
-                       (ntho (- n 1) x h)))))))
+                  (all
+                  (cdro l h)
+                  (ntheqo (- n 1) x h)))))))
 
-; Not eaual
+; Negates a goal
+; (fresh (h) (run* (h) (== (/= 'a 'b) h))) => '((()))
+; (fresh (h) (run* (h) (== (/= 'a 'a) h))) => '(())
+(define negato
+ (lambda (x)
+   (cond ((failed? x) '(()))
+         (else '()))))
+                      
+
+; Not equal
 ; ((/= 'a 'a) '()) => '()
 ; ((/= 'b 'a) '()) => '(())
 ; ((/= 'fail 'success) '()) => (())
 ; ((/= 'b 'b) '()) => '()
 (define /=
   (lambda (x y)
-    (neg (== x y))))
-    
+    (cond ((eq? x y) empty-s)
+          (else (succeed empty-s)))))
+
+; Select the nth element
+; (fresh (h) (run* (h) (ntho 1 '(a b c d) h)))
+; (fresh (h) (run* (h) (ntho 2 '(a b c d) h)))
+(define ntho
+  (lambda (n l a)
+    (fresh (h)
+           (cond ((= n 0)
+                  (caro l a))
+                 (else
+                  (all 
+                  (cdro l h)
+                  (ntho (- n 1) h a)))))))
