@@ -20,6 +20,8 @@
 (provide ntheqo)
 (provide ntho)
 (provide pairo)
+(provide nullo)
+(provide eqo)
 
 ; Failed goal
 (define fail
@@ -329,3 +331,15 @@
   (lambda (p)
     (fresh (a d)
            (conso a d p))))
+
+; Check if null
+; (fresh (x) (run* (x) (nullo x))) => '(())
+; (fresh (x) (run* (x) (all (== x 'a) (nullo x)))) => '()
+(define nullo
+  (lambda (x)
+    (== '() x)))
+
+; Unify with ==
+(define eqo
+  (lambda (x y)
+    (== x y)))
