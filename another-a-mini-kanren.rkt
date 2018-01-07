@@ -22,6 +22,8 @@
 (provide pairo)
 (provide nullo)
 (provide eqo)
+(provide all-uniqueo)
+(provide neg)
 
 ; Failed goal
 (define fail
@@ -306,12 +308,12 @@
     (fresh (h)
            (cond ((= n 0)
                   (all 
-                  (caro l h)
-                  (== h x)))
+                   (caro l h)
+                   (== h x)))
                  (else
                   (all
-                  (cdro l h)
-                  (ntheqo (- n 1) x h)))))))            
+                   (cdro l h)
+                   (ntheqo (- n 1) x h)))))))            
 
 ; Select the nth element
 ; (fresh (h) (run* (h) (ntho 1 '(a b c d) h)))
@@ -323,8 +325,8 @@
                   (caro l a))
                  (else
                   (all 
-                  (cdro l h)
-                  (ntho (- n 1) h a)))))))
+                   (cdro l h)
+                   (ntho (- n 1) h a)))))))
 
 ; Unify as a pair
 (define pairo
@@ -343,3 +345,31 @@
 (define eqo
   (lambda (x y)
     (== x y)))
+
+; Succeeds with a list of unique values
+(define all-uniqueo
+  (lambda (l h)
+    (letrec ((all-unique-helpero
+              (lambda (l lol acc h)
+                (fresh (a b c)
+                       (any (all (nullo lol)
+                                 (== h acc))
+                            (all (caro lol a)
+                                 (cdro lol b)
+                                 (eqo l a)
+                                 (all-unique-helpero l b acc h))
+                            (all (caro lol a)
+                                 (cdro lol b)
+                                 (neg (eqo l a))
+                                 (conso a acc c)
+                                 (all-unique-helpero l b c h)))))))
+      (fresh (a b c d)
+             (any (nullo l)  
+                  (all (caro l a)
+                       (cdro l b)
+                       (all-unique-helpero a b '() c)
+                       (all-uniqueo c d)
+                       (any (all (nullo d)
+                                 (== (list a) h))
+                            (all (neg (nullo d))
+                                 (conso a d h)))))))))
